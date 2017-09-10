@@ -9,14 +9,19 @@ import java.util.Random;
 import java.util.Scanner;
 import java.net.*;
 
-public class Client {
+public abstract class Client {
+	public static enum Type {
+		PRODUCER,
+		CONSUMER
+	}
+
 	public static Scanner sc;
 	public static Socket socket;
 	public static PrintWriter output;
 	public static BufferedReader input;
 	private static ObjectOutputStream outputStream;
 
-	public static void main(String[] args) {
+	static void connectToServer (Type type){
 		String serverHost = null;
 		int serverPort = 0;
 
@@ -24,16 +29,17 @@ public class Client {
 		serverPort = 8080;
 
 		try {
-		/* Creates a client socket */
-		      socket = new Socket(serverHost, serverPort);
-		      output = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
-		      input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-		      sc = new Scanner(System.in);
+			/* Creates a client socket */
+			socket = new Socket(serverHost, serverPort);
+			output = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
+			input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			sc = new Scanner(System.in);
 			
-			
+			int intType = type.ordinal();
+			output.print(intType);
 			String s = sc.nextLine();
 			output.println(s);
-		
+
 			sc.close();
 			input.close();
 			output.close();
@@ -44,5 +50,4 @@ public class Client {
 			e.printStackTrace();
 		}
 	}
-
 }
