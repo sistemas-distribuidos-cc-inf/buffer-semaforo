@@ -40,18 +40,20 @@ public class Client {
 			boolean loop = true;
 			
 			while (loop) {
-				System.out.println( (Type.PRODUCER.ordinal()) +  " - Produzir item aleatorio");
-				System.out.println( (Type.CONSUMER.ordinal()) +  " - Consome um item do buffer");
-				int option = sc.nextInt();
+				System.out.println( "0 - " + Type.PRODUCER.toString());
+				System.out.println( "1 - " + Type.CONSUMER.toString());
+				int option = sc.nextInt();	
 				String s = option == Type.PRODUCER.ordinal() ? produce() : "" ;
-				System.out.println(option + " " + s);
-				output.print(option);
+				output.println(Type.values()[option].toString());
 				output.println(s);
-				int  status = Integer.parseInt( input.readLine());
+				String status = input.readLine();
+				
+				
+
 				if ( option==Type.CONSUMER.ordinal()){
 					consume(status);
 				}else if (option==Type.PRODUCER.ordinal()){
-					//System.out.println(Buffer.Response.values()[status].toString());
+					System.out.println("Status da resposta " + status);
 				}
 			}
 			
@@ -68,16 +70,16 @@ public class Client {
 	}
 	
 	
-	static void consume (int status) {
+	static void consume (String status) {
 		try {			
-			if (status == Buffer.Response.SUCCESS.ordinal()){
+			if (status.equals( Buffer.Response.SUCCESS.toString())){
 				String response = input.readLine();
 				System.out.println("O item removido do buffer foi: " + response);
-			}else if (status==Buffer.Response.FAILURE_EMPTY_BUFFER.ordinal()) {
+			}else if (status.equals( Buffer.Response.FAILURE_EMPTY_BUFFER.toString())){
 				System.out.println("Bufffer estava vazio");
-			}else if (status==Buffer.Response.FAILURE_INVALID_REQUEST.ordinal()) {
+			}else if (status.equals( Buffer.Response.FAILURE_INVALID_REQUEST.toString())){
 				System.out.println("A requisicaoo possuia um formato incorreto. Siga o protocolo");
-			}else if (status==Buffer.Response.FAILURE.ordinal()) {
+			}else if (status.equals( Buffer.Response.FAILURE.toString())){
 				System.out.println("Alguma coisa deu errado");
 			}		    
 		} catch (IOException e) {	

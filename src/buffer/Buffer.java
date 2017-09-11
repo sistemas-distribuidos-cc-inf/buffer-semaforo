@@ -110,16 +110,17 @@ public class Buffer {
 			try {
 				input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		        output = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
-		        int type =  input.read() - '0';
-		        String s = input.readLine();
-		        System.out.println(type + " "  + s );
-
-		        if (type==Client.Type.PRODUCER.ordinal()){
-		        	Buffer.Response response =  Buffer.Store(s);
-		        	output.println("" + response.ordinal());
-		        }
-		        if (type==Client.Type.CONSUMER.ordinal()){
-		        	Buffer.Consume();
+		        String type ;
+		        while ((type =  input.readLine()) != null) {
+			        String s = input.readLine();
+			        System.out.println("Type " + type);
+			        if (type.equals(Client.Type.PRODUCER.toString())){
+			        	Buffer.Response response =  Buffer.Store(s);
+			        	output.println("" + response.toString());
+			        }
+			        if (type.equals(Client.Type.CONSUMER.toString())){
+			        	Buffer.Consume();
+			        }
 		        }
 
 				input.close();
