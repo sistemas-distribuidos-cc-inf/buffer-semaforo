@@ -66,26 +66,25 @@ public class Buffer {
 	}
 	
 	static Response Store (String s) {
-		if(index_buffer == BUFFER_SIZE) {
+		if(index_buffer == BUFFER_SIZE)
 			return Response.FAILURE_FULL_BUFFER;
-		}
 		else {
 			if(index_buffer == -1)
 				buffer[++index_buffer] = s;
 			else
-				buffer[index_buffer++] = s;
-			
+				buffer[index_buffer++] = s;			
 			return Response.SUCCESS;
 		}
 	}
-	static String Consume () {
+	static void Consume (PrintWriter output) {
 		if(index_buffer == -1)
-			return "";
+			output.println (Response.FAILURE_EMPTY_BUFFER.toString()) ;
 		else {
+			output.println (Response.SUCCESS.toString()) ;
 			if(index_buffer == BUFFER_SIZE)
-				return buffer[--index_buffer];
+				output.println ( buffer[--index_buffer] );
 			else
-				return buffer[index_buffer--];
+				output.println ( buffer[index_buffer--] );
 		}
 	}
 
@@ -119,7 +118,7 @@ public class Buffer {
 			        	output.println("" + response.toString());
 			        }
 			        if (type.equals(Client.Type.CONSUMER.toString())){
-			        	Buffer.Consume();
+			        	Buffer.Consume(output);
 			        }
 		        }
 
