@@ -28,7 +28,7 @@ public class Buffer {
 	private static final int BUFFER_SIZE = 3;
 	private static int index_buffer = -1;
 	static String buffer[] = new String[BUFFER_SIZE];
-	private static Semaphore sem;
+	private static Semaphore sem = new Semaphore(1);
 	
 	public static void main(String[] args) throws Exception {
 		
@@ -72,6 +72,7 @@ public class Buffer {
 			return Response.SUCCESS;
 		}
 	}
+	
 	static void Consume (PrintWriter output) {
 		if(index_buffer == -1)
 			output.println (Response.FAILURE_EMPTY_BUFFER.toString()) ;
@@ -105,7 +106,7 @@ public class Buffer {
 		        String type ;
 		        while ((type =  input.readLine()) != null) {
 			        String s = input.readLine();
-			        System.out.println("Type " + type);
+			        sem.acquire();
 			        if (type.equals(Client.Type.PRODUCER.toString())){
 			        	Buffer.Response response =  Buffer.Store(s);
 			        	output.println("" + response.toString());
@@ -113,12 +114,13 @@ public class Buffer {
 			        if (type.equals(Client.Type.CONSUMER.toString())){
 			        	Buffer.Consume(output);
 			        }
+			        sem.release();
 		        }
 
 				input.close();
 		        output.close();
 		        socket.close();
-			} catch (IOException e) {
+			} catch (IOException | InterruptedException e) {
 				System.out.println(e.getMessage());
 				System.out.println("Client " + id + " just left.");
 			}

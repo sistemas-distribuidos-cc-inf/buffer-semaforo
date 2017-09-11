@@ -82,7 +82,7 @@ public class Client {
 			}else if (status.equals( Buffer.Response.FAILURE.toString())){
 				System.out.println("Alguma coisa deu errado");
 			}		    
-		} catch (IOException e) {	
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
