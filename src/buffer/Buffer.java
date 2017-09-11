@@ -116,7 +116,7 @@ public class Buffer {
 
 		        if (type==Client.Type.PRODUCER.ordinal()){
 		        	Buffer.Response response =  Buffer.Store(s);
-		        	output.print(response.ordinal());
+		        	output.println("" + response.ordinal());
 		        }
 		        if (type==Client.Type.CONSUMER.ordinal()){
 		        	Buffer.Consume();
