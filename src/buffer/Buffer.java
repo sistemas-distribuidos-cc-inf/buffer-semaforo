@@ -25,9 +25,8 @@ public class Buffer {
 		FAILURE 	
 	}
 	
-	
-	private static final int BUFFER_SIZE = 10;
-	private static int index_buffer = 0;
+	private static final int BUFFER_SIZE = 3;
+	private static int index_buffer = -1;
 	static String buffer[] = new String[BUFFER_SIZE];
 	private static Semaphore sem;
 	
@@ -66,13 +65,10 @@ public class Buffer {
 	}
 	
 	static Response Store (String s) {
-		if(index_buffer == BUFFER_SIZE)
+		if(index_buffer == BUFFER_SIZE-1)
 			return Response.FAILURE_FULL_BUFFER;
 		else {
-			if(index_buffer == -1)
-				buffer[++index_buffer] = s;
-			else
-				buffer[index_buffer++] = s;			
+			buffer[++index_buffer] = s;
 			return Response.SUCCESS;
 		}
 	}
@@ -81,10 +77,7 @@ public class Buffer {
 			output.println (Response.FAILURE_EMPTY_BUFFER.toString()) ;
 		else {
 			output.println (Response.SUCCESS.toString()) ;
-			if(index_buffer == BUFFER_SIZE)
-				output.println ( buffer[--index_buffer] );
-			else
-				output.println ( buffer[index_buffer--] );
+			output.println ( buffer[index_buffer--] );
 		}
 	}
 
