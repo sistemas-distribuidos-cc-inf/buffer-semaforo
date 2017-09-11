@@ -48,8 +48,6 @@ public class Client {
 				output.println(s);
 				String status = input.readLine();
 				
-				
-
 				if ( option==Type.CONSUMER.ordinal()){
 					consume(status);
 				}else if (option==Type.PRODUCER.ordinal()){

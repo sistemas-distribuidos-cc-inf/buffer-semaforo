@@ -69,6 +69,7 @@ public class Buffer {
 			return Response.FAILURE_FULL_BUFFER;
 		else {
 			buffer[++index_buffer] = s;
+			System.out.println("Armazenei " + s + " com sucesso");
 			return Response.SUCCESS;
 		}
 	}
@@ -77,6 +78,7 @@ public class Buffer {
 		if(index_buffer == -1)
 			output.println (Response.FAILURE_EMPTY_BUFFER.toString()) ;
 		else {
+			System.out.println("Retornei do buffer " + buffer[index_buffer]);
 			output.println (Response.SUCCESS.toString()) ;
 			output.println ( buffer[index_buffer--] );
 		}
@@ -107,6 +109,7 @@ public class Buffer {
 		        while ((type =  input.readLine()) != null) {
 			        String s = input.readLine();
 			        sem.acquire();
+			        System.out.println("Cliente " + id + " entrou na regiao crítica");
 			        if (type.equals(Client.Type.PRODUCER.toString())){
 			        	Buffer.Response response =  Buffer.Store(s);
 			        	output.println("" + response.toString());
@@ -114,7 +117,9 @@ public class Buffer {
 			        if (type.equals(Client.Type.CONSUMER.toString())){
 			        	Buffer.Consume(output);
 			        }
+			        Thread.sleep(5000);
 			        sem.release();
+			        System.out.println("Cliente " + id + " saiu da regiao crítica");
 		        }
 
 				input.close();
