@@ -11,27 +11,25 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.concurrent.*;
 
 import clients.Client;
 
 public class Buffer {	
 	
-	public static enum ProducerResponse{
-		FAILURE_FULL_BUFFER,
-		SUCCESS,
-		FAILURE_INVALID_REQUEST,
-		FAILURE
-	}
-	
-	public static enum ConsumerResponse{
-		FAILURE_EMPTY_BUFFER,
-		FAILURE,
-		SUCCESS
+	public static enum Response{ 		
+		SUCCESS, 		
+		FAILURE_FULL_BUFFER, 		
+		FAILURE_INVALID_REQUEST, 		
+		FAILURE_EMPTY_BUFFER, 		
+		FAILURE 	
 	}
 	
 	
 	private static final int BUFFER_SIZE = 10;
+	private static int index_buffer = 0;
 	static String buffer[] = new String[BUFFER_SIZE];
+	private static Semaphore sem;
 	
 	public static void main(String[] args) throws Exception {
 		
@@ -67,14 +65,28 @@ public class Buffer {
 		}			
 	}
 	
-	static void Produce (String s) {
-		//TODO
-		// add this string to the buffer after handling concurrency
+	static Response Store (String s) {
+		if(index_buffer == BUFFER_SIZE) {
+			return Response.FAILURE_FULL_BUFFER;
+		}
+		else {
+			if(index_buffer == -1)
+				buffer[++index_buffer] = s;
+			else
+				buffer[index_buffer++] = s;
+			
+			return Response.SUCCESS;
+		}
 	}
 	static String Consume () {
-		// TODO
-		// return a string from the buffer after handlind concurrency	
-		return "";
+		if(index_buffer == -1)
+			return "";
+		else {
+			if(index_buffer == BUFFER_SIZE)
+				return buffer[--index_buffer];
+			else
+				return buffer[index_buffer--];
+		}
 	}
 
 	private static class Conection extends Thread {
@@ -94,28 +106,20 @@ public class Buffer {
 		public void run() {
 			System.out.println("Client " + id + " at IP: " + socket.getInetAddress() + " PORT: " + socket.getPort()
 					+ " just entered");
-
+			
 			try {
-				
 				input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		        output = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
 		        int type =  input.read() - '0';
-		        
+		        String s = input.readLine();
+		        System.out.println(type + " "  + s );
+
 		        if (type==Client.Type.PRODUCER.ordinal()){
-		        	Buffer.Produce("");
-		        	/*TODO
-		        	 * read a String from the producer to store it in the buffer
-		        	 RETURN A CLIENT_RESPONSE TO THE PRODUCER
-		        	 eg: output.print(Buffer.SUCCESS);
-		        	 */
+		        	Buffer.Response response =  Buffer.Store(s);
+		        	output.print(response.ordinal());
 		        }
 		        if (type==Client.Type.CONSUMER.ordinal()){
 		        	Buffer.Consume();
-		        	/*TODO
-		        	 * return a string from the buffer to the client
-		        	 RETURN A CLIENT_RESPONSE TO THE CONSUMER
-		        	 eg: output.print(Buffer.EMPTY_BUFFER);
-		        	 */
 		        }
 
 				input.close();
@@ -125,6 +129,7 @@ public class Buffer {
 				System.out.println(e.getMessage());
 				System.out.println("Client " + id + " just left.");
 			}
+
 			System.out.println("Client " + id + " just left.");
 			return;
 		}
