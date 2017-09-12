@@ -109,7 +109,7 @@ public class Buffer {
 		        while ((type =  input.readLine()) != null) {
 			        String s = input.readLine();
 			        sem.acquire();
-			        System.out.println("Cliente " + id + " entrou na regiao crítica");
+			        System.out.println("Cliente " + id + " entrou na regiao critica");
 			        if (type.equals(Client.Type.PRODUCER.toString())){
 			        	Buffer.Response response =  Buffer.Store(s);
 			        	output.println("" + response.toString());
@@ -119,7 +119,7 @@ public class Buffer {
 			        }
 			        Thread.sleep(5000);
 			        sem.release();
-			        System.out.println("Cliente " + id + " saiu da regiao crítica");
+			        System.out.println("Cliente " + id + " saiu da regiao critica");
 		        }
 
 				input.close();
